@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agence de Traduction — Dashboard</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <canvas id="particles"></canvas>
+
+  <!-- ── Navbar ──────────────────────────────────────────────────── -->
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <span class="brand-icon">&#128218;</span>
+      <span class="grad-text">Agence de Traduction</span>
+    </div>
+    <div class="navbar-user">
+      <span id="navUserName"></span>
+      <span id="navUserRole" class="badge"></span>
+      <button class="btn btn-sm btn-outline" id="btnLogout">&#x23FB; Déconnexion</button>
+    </div>
+  </nav>
+
+  <!-- ── Main ────────────────────────────────────────────────────── -->
+  <main class="container">
+
+    <!-- KPI strip -->
+    <div class="kpi-strip">
+      <div class="kpi-card glow-border">
+        <span class="kpi-icon">&#128202;</span>
+        <div class="kpi-value" id="kpiTotal">0</div>
+        <div class="kpi-label">Projets total</div>
+        <div class="kpi-orb"></div>
+      </div>
+      <div class="kpi-card glow-border">
+        <span class="kpi-icon">&#9889;</span>
+        <div class="kpi-value" id="kpiExpress">0</div>
+        <div class="kpi-label">Express</div>
+        <div class="kpi-orb"></div>
+      </div>
+      <div class="kpi-card glow-border">
+        <span class="kpi-icon">&#9200;</span>
+        <div class="kpi-value" id="kpiRetard">0</div>
+        <div class="kpi-label">En retard</div>
+        <div class="kpi-orb"></div>
+      </div>
+      <div class="kpi-card glow-border">
+        <span class="kpi-icon">&#128176;</span>
+        <div class="kpi-value" id="kpiGains">0 €</div>
+        <div class="kpi-label">Gains totaux</div>
+        <div class="kpi-orb"></div>
+      </div>
+    </div>
+
+    <!-- Nouveau projet (admin) -->
+    <section id="sectionNouveauProjet" class="card hidden">
+      <h2 class="grad-text">&#43; Nouveau projet</h2>
+      <form id="formProjet" class="form-grid">
+        <div class="field">
+          <label>Traducteur</label>
+          <select id="selectTraducteur" required></select>
+        </div>
+        <div class="field">
+          <label>Titre du projet</label>
+          <input type="text" id="titreProjet" placeholder="Ex : Manuel technique Airbus" required />
+        </div>
+        <div class="field">
+          <label>Nombre de pages</label>
+          <input type="number" id="nbPages" min="1" placeholder="12" required />
+        </div>
+        <div class="field">
+          <label>Tarif par page (€)</label>
+          <input type="number" id="tarifParPage" min="0.01" step="0.01" placeholder="15.00" required />
+        </div>
+        <div class="field">
+          <label>Date limite (deadline)</label>
+          <input type="datetime-local" id="deadline" required />
+        </div>
+        <div class="field field-full">
+          <div id="expressPreview" class="alert hidden"></div>
+          <button type="submit" class="btn btn-primary">
+            <span>&#9654;</span> Créer le projet
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Tableau projets -->
+    <section class="card">
+      <div class="section-header">
+        <h2 class="grad-text">&#128196; Projets</h2>
+        <button class="btn btn-sm btn-outline" id="btnRefresh">&#8635; Actualiser</button>
+      </div>
+      <div id="alertMsg" class="alert hidden"></div>
+      <div class="table-wrap">
+        <table id="tableauProjets">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Titre</th>
+              <th id="thTraducteur">Traducteur</th>
+              <th>Pages</th>
+              <th>Tarif / p.</th>
+              <th>Deadline</th>
+              <th>Livré le</th>
+              <th>Statut</th>
+              <th>Montant final</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyProjets">
+            <tr><td colspan="10" class="center muted" style="padding:2rem">Chargement…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── Modal calcul ─────────────────────────────────────────────── -->
+  <div id="modalOverlay" class="modal-overlay hidden">
+    <div class="modal">
+      <button class="modal-close" id="btnModalClose">&times;</button>
+      <h2 class="grad-text">&#128200; Détail de la rémunération</h2>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <script src="js/particles.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

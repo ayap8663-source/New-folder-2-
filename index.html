@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agence de Traduction — Connexion</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="login-page">
+
+  <canvas id="particles"></canvas>
+
+  <div class="login-card glow-border">
+    <div class="login-logo">
+      <span class="logo-icon">&#128218;</span>
+      <h1 class="grad-text">Agence de Traduction</h1>
+      <p>Gestion des projets &amp; rémunérations</p>
+    </div>
+
+    <div class="login-divider"></div>
+
+    <form id="loginForm">
+      <div class="field" style="margin-bottom:.9rem">
+        <label>Adresse e-mail</label>
+        <input type="email" id="email" placeholder="votre@email.fr" required autocomplete="username" />
+      </div>
+      <div class="field" style="margin-bottom:1.25rem">
+        <label>Mot de passe</label>
+        <input type="password" id="motDePasse" placeholder="••••••••" required autocomplete="current-password" />
+      </div>
+      <div id="loginError" class="alert alert-error hidden"></div>
+      <button type="submit" class="btn btn-primary btn-full" style="padding:.8rem">
+        <span>Se connecter</span>
+        <span>&#8594;</span>
+      </button>
+    </form>
+
+    <p class="login-hint">
+      Comptes démo &nbsp;·&nbsp; mot de passe : <code>password123</code><br />
+      Admin : <code>admin@agence.fr</code> &nbsp;|&nbsp;
+      Traducteur : <code>bruno@agence.fr</code>
+    </p>
+  </div>
+
+  <script src="js/particles.js"></script>
+  <script>
+    // Ripple on button
+    document.querySelectorAll('.btn').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        const r = document.createElement('span');
+        const rect = this.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        r.className = 'ripple';
+        r.style.cssText = `width:${size}px;height:${size}px;left:${e.clientX-rect.left-size/2}px;top:${e.clientY-rect.top-size/2}px`;
+        this.appendChild(r);
+        setTimeout(() => r.remove(), 600);
+      });
+    });
+
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const errEl = document.getElementById('loginError');
+      const btn   = e.target.querySelector('[type=submit]');
+      errEl.classList.add('hidden');
+      btn.disabled = true;
+      btn.innerHTML = '<span style="opacity:.6">Connexion…</span>';
+
+      try {
+        const res  = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email:      document.getElementById('email').value.trim(),
+            motDePasse: document.getElementById('motDePasse').value,
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          errEl.textContent = data.error || 'Erreur de connexion';
+          errEl.classList.remove('hidden');
+          btn.disabled = false;
+          btn.innerHTML = '<span>Se connecter</span><span>&#8594;</span>';
+          return;
+        }
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user',  JSON.stringify(data.user));
+        btn.innerHTML = '<span>&#10003; Connecté</span>';
+        btn.style.background = 'linear-gradient(135deg,#10b981,#059669)';
+        setTimeout(() => window.location.href = 'dashboard.html', 400);
+      } catch {
+        errEl.textContent = 'Impossible de joindre le serveur.';
+        errEl.classList.remove('hidden');
+        btn.disabled = false;
+        btn.innerHTML = '<span>Se connecter</span><span>&#8594;</span>';
+      }
+    });
+  </script>
+</body>
+</html>
